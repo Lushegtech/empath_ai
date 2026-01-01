@@ -12,6 +12,7 @@ interface DetailsScreenProps {
 
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
   const [currentTime, setCurrentTime] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -29,6 +30,36 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = window.location.href;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleEmailShare = () => {
+    const subject = encodeURIComponent(`My Interaction Style: ${result.personalityType}`);
+    const body = encodeURIComponent(
+      `I just discovered my Interaction Style!\n\n` +
+        `My personality type: ${result.personalityType}\n` +
+        `${result.shortDescription}\n\n` +
+        `Key traits: ${result.keyTraits.join(', ')}\n\n` +
+        `Take the test yourself: ${window.location.origin}`
+    );
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+  };
 
   return (
     <BrandLayout currentTime={currentTime}>
@@ -155,13 +186,13 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           </h2>
           <div className="flex gap-4">
             <button
-              onClick={() => alert('Simulated Share')}
+              onClick={handleCopyLink}
               className="h-10 px-6 border border-[#F2F0EB]/30 hover:bg-[#F2F0EB] hover:text-[#1A1A1A] transition-colors rounded-full font-mono text-xs uppercase tracking-widest"
             >
-              Copy Link
+              {copied ? '✓ Copied!' : 'Copy Link'}
             </button>
             <button
-              onClick={() => alert('Simulated Email')}
+              onClick={handleEmailShare}
               className="h-10 px-6 bg-[#E05D44] text-white hover:bg-[#c04d3b] transition-colors rounded-full font-mono text-xs uppercase tracking-widest border border-transparent"
             >
               Email Me
