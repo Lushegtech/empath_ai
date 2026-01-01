@@ -108,7 +108,7 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
       </header>
 
       {/* --- MAIN CONTENT --- */}
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center p-4 sm:p-6 w-full">
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-start md:justify-center pt-28 pb-12 px-4 sm:p-6 w-full">
         {children}
       </main>
 

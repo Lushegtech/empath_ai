@@ -184,16 +184,16 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           >
             Share your profile
           </h2>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <button
               onClick={handleCopyLink}
-              className="h-10 px-6 border border-[#F2F0EB]/30 hover:bg-[#F2F0EB] hover:text-[#1A1A1A] transition-colors rounded-full font-mono text-xs uppercase tracking-widest"
+              className="h-10 px-6 border border-[#F2F0EB]/30 hover:bg-[#F2F0EB] hover:text-[#1A1A1A] transition-colors rounded-full font-mono text-xs uppercase tracking-widest min-w-[140px]"
             >
               {copied ? '✓ Copied!' : 'Copy Link'}
             </button>
             <button
               onClick={handleEmailShare}
-              className="h-10 px-6 bg-[#E05D44] text-white hover:bg-[#c04d3b] transition-colors rounded-full font-mono text-xs uppercase tracking-widest border border-transparent"
+              className="h-10 px-6 bg-[#E05D44] text-white hover:bg-[#c04d3b] transition-colors rounded-full font-mono text-xs uppercase tracking-widest border border-transparent min-w-[140px]"
             >
               Email Me
             </button>
