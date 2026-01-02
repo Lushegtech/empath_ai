@@ -123,7 +123,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                   {currentQuestion.text}
                 </h2>
                 <p className="font-mono text-xs text-black/50 uppercase tracking-widest max-w-md">
-                  Calibrate your response
+                  &lt; DRAG TO ADJUST &gt;
                 </p>
               </div>
 
@@ -183,12 +183,10 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                       >
                         <div className="flex flex-col items-center gap-3">
-                          {/* The Diamond */}
-                          {/* The Diamond */}
+                          {/* The Circle */}
                           <motion.div
-                            className="w-4 h-4 bg-[#9C5B42] border-2 border-[#F1ECE2]"
+                            className="w-4 h-4 bg-[#9C5B42] border-2 border-[#F1ECE2] rounded-full"
                             animate={{
-                              rotate: 45,
                               scale: isDragging ? 1.5 : 1,
                               boxShadow: isDragging
                                 ? '0 0 20px rgba(156, 91, 66, 0.4)'

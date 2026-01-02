@@ -54,7 +54,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
           >
             <span className="h-px w-8 sm:w-12 bg-[#9C5B42]"></span>
             <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#9C5B42]">
-              Free Assessment
+              UNCOVER YOUR NATURE
             </span>
             <span className="h-px w-8 sm:w-12 bg-[#9C5B42]"></span>
           </motion.div>
