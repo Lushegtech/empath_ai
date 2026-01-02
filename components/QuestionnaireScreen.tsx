@@ -15,6 +15,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [sliderValue, setSliderValue] = useState<number>(3); // Default middle (Neutral)
   const [isAccelerating, setIsAccelerating] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
 
   const currentQuestion = QUESTIONS[currentQuestionIndex];
@@ -163,6 +164,11 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                     step="1"
                     value={sliderValue}
                     onChange={handleSliderChange}
+                    onPointerDown={() => setIsDragging(true)}
+                    onPointerUp={() => setIsDragging(false)}
+                    onBlur={() => setIsDragging(false)}
+                    onTouchStart={() => setIsDragging(true)}
+                    onTouchEnd={() => setIsDragging(false)}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                   />
 
@@ -178,7 +184,18 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                       >
                         <div className="flex flex-col items-center gap-3">
                           {/* The Diamond */}
-                          <div className="w-4 h-4 bg-[#9C5B42] rotate-45 border-2 border-[#F1ECE2] shadow-lg" />
+                          {/* The Diamond */}
+                          <motion.div
+                            className="w-4 h-4 bg-[#9C5B42] border-2 border-[#F1ECE2]"
+                            animate={{
+                              rotate: 45,
+                              scale: isDragging ? 1.5 : 1,
+                              boxShadow: isDragging
+                                ? '0 0 20px rgba(156, 91, 66, 0.4)'
+                                : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                            }}
+                            transition={{ duration: 0.2 }}
+                          />
 
                           {/* The Value Label */}
                           <span className="absolute top-8 font-mono text-xs font-bold text-[#9C5B42]">

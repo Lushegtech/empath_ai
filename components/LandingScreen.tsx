@@ -106,26 +106,11 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
 
               <div className="h-14 w-full bg-[#F1ECE2]/80 rounded border border-black/5 flex items-center px-4 justify-between group-hover:border-[#9C5B42]/30 transition-colors">
                 <span className="font-serif italic text-xl sm:text-2xl text-black/80">
-                  Start the quiz...
+                  Ready to begin?
                 </span>
                 <span className="material-symbols-outlined text-black/20 group-hover:text-[#9C5B42] transition-colors">
                   fingerprint
                 </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded bg-black/5 border border-black/5">
-                  <span className="block text-[10px] font-mono uppercase text-black/40 mb-1">
-                    Time
-                  </span>
-                  <span className="font-mono text-sm font-bold text-[#10302A]">2 Minutes</span>
-                </div>
-                <div className="p-3 rounded bg-black/5 border border-black/5">
-                  <span className="block text-[10px] font-mono uppercase text-black/40 mb-1">
-                    Cost
-                  </span>
-                  <span className="font-mono text-sm font-bold text-[#10302A]">Free</span>
-                </div>
               </div>
 
               <div className="flex flex-col gap-3">
@@ -134,7 +119,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
                   className="relative w-full h-12 bg-[#10302A] text-[#F1ECE2] rounded overflow-hidden flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
                 >
                   <span className="font-mono font-bold tracking-widest uppercase z-10 text-xs sm:text-sm">
-                    Discover My Style
+                    Start Quiz
                   </span>
                   <div className="absolute inset-0 bg-[#9C5B42] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-out"></div>
                 </button>
