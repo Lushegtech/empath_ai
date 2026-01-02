@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 // --- VISUAL ASSETS ---
@@ -61,11 +61,88 @@ const GridPattern = () => (
   ></div>
 );
 
+const Gyroscope = ({ speedMultiplier = 1 }: { speedMultiplier?: number }) => (
+  <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-[0.08] select-none">
+    {/* Ring 1 - Outer Slow Clockwise */}
+    <motion.div
+      className="absolute w-[800px] h-[800px] rounded-full border border-[#10302A] border-dashed"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 120 / speedMultiplier, repeat: Infinity, ease: 'linear' }}
+      style={{ borderSpacing: '20px' }}
+    />
+
+    {/* Ring 2 - Middle Medium Counter-Clockwise */}
+    <motion.div
+      className="absolute w-[600px] h-[600px] rounded-full border border-[#10302A]/80 opacity-60"
+      animate={{ rotate: -360 }}
+      transition={{ duration: 80 / speedMultiplier, repeat: Infinity, ease: 'linear' }}
+    />
+
+    {/* Ring 3 - Inner Fast Clockwise (Eccentric) */}
+    <motion.div
+      className="absolute w-[450px] h-[450px] rounded-full border-[0.5px] border-[#9C5B42]"
+      animate={{ rotate: 360, scale: [1, 1.05, 1] }}
+      transition={{
+        rotate: { duration: 60 / speedMultiplier, repeat: Infinity, ease: 'linear' },
+        scale: { duration: 10 / speedMultiplier, repeat: Infinity, ease: 'easeInOut' },
+      }}
+    />
+
+    {/* Center Axis Marker */}
+    <div className="absolute w-2 h-2 rounded-full bg-[#9C5B42] opacity-50" />
+  </div>
+);
+
+const Particles = () => {
+  const [particles, setParticles] = useState<
+    Array<{ top: string; left: string; delay: number; duration: number }>
+  >([]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setParticles(
+        [...Array(12)].map(() => ({
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          delay: Math.random() * 5,
+          duration: 5 + Math.random() * 5,
+        }))
+      );
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden select-none">
+      {particles.map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 rounded-full bg-[#9C5B42] opacity-20"
+          style={{ top: p.top, left: p.left }}
+          animate={{
+            y: [-20, 20, -20],
+            opacity: [0, 0.4, 0],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 interface BrandLayoutProps {
   children: React.ReactNode;
   currentTime?: string;
   className?: string;
   showFooter?: boolean;
+  speedMultiplier?: number;
+  showGyroscope?: boolean;
+  showTopoLines?: boolean;
 }
 
 const BrandLayout: React.FC<BrandLayoutProps> = ({
@@ -73,6 +150,9 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
   currentTime,
   className = '',
   showFooter = true,
+  speedMultiplier = 1,
+  showGyroscope = false,
+  showTopoLines = true,
 }) => {
   // Load Fonts
   useEffect(() => {
@@ -91,7 +171,9 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
       className={`relative flex min-h-screen w-full flex-col bg-[#F1ECE2] text-[#10302A] font-sans overflow-hidden selection:bg-[#9C5B42] selection:text-white ${className}`}
     >
       <GridPattern />
-      <TopoLines />
+      {showGyroscope && <Gyroscope speedMultiplier={speedMultiplier} />}
+      <Particles />
+      {showTopoLines && <TopoLines />}
 
       {/* --- HEADER --- */}
       <header className="absolute top-0 left-0 w-full p-6 sm:p-8 flex justify-between items-start pointer-events-none z-20 font-mono text-[10px] tracking-widest uppercase text-black/60">
