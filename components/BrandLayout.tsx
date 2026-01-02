@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { motion, useMotionValue, useMotionTemplate, MotionValue } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-// --- VISUAL ASSETS ---
 // --- VISUAL ASSETS ---
 const TopoLines = () => (
   <div className="absolute inset-0 z-0 opacity-[0.12] text-[#6B796A] pointer-events-none overflow-hidden select-none">
@@ -62,37 +61,6 @@ const GridPattern = () => (
   ></div>
 );
 
-const FilmGrain = () => (
-  <div
-    className="absolute inset-0 z-[1] opacity-[0.07] pointer-events-none mix-blend-multiply"
-    style={{
-      backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')",
-      filter: 'contrast(120%) brightness(100%)',
-    }}
-  />
-);
-
-const Lantern = ({
-  mouseX,
-  mouseY,
-}: {
-  mouseX: MotionValue<number>;
-  mouseY: MotionValue<number>;
-}) => {
-  const background = useMotionTemplate`radial-gradient(
-      600px circle at ${mouseX}px ${mouseY}px,
-      rgba(255, 255, 255, 0.4),
-      transparent 40%
-    )`;
-
-  return (
-    <motion.div
-      className="absolute inset-0 z-[2] pointer-events-none mix-blend-overlay"
-      style={{ background }}
-    />
-  );
-};
-
 interface BrandLayoutProps {
   children: React.ReactNode;
   currentTime?: string;
@@ -106,19 +74,6 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
   className = '',
   showFooter = true,
 }) => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  useEffect(() => {
-    const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
-      mouseX.set(clientX);
-      mouseY.set(clientY);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
-
   // Load Fonts
   useEffect(() => {
     const link = document.createElement('link');
@@ -137,8 +92,6 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
     >
       <GridPattern />
       <TopoLines />
-      <FilmGrain />
-      <Lantern mouseX={mouseX} mouseY={mouseY} />
 
       {/* --- HEADER --- */}
       <header className="absolute top-0 left-0 w-full p-6 sm:p-8 flex justify-between items-start pointer-events-none z-20 font-mono text-[10px] tracking-widest uppercase text-black/60">
