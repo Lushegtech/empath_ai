@@ -122,38 +122,45 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                 >
                   {currentQuestion.text}
                 </h2>
-                <p className="font-mono text-xs text-black/50 uppercase tracking-widest max-w-md">
-                  &lt; DRAG TO ADJUST &gt;
-                </p>
               </div>
 
               {/* Calibration Slider */}
-              {/* Calibration Slider */}
               <div className="w-full max-w-xl mx-auto mb-16 px-4">
                 {/* Labels */}
-                <div className="flex justify-between text-[10px] font-mono uppercase tracking-widest text-[#10302A]/40 mb-6 px-1">
+                <div className="flex justify-between text-[10px] font-mono uppercase tracking-widest text-[#10302A]/40 mb-3 px-1">
                   <span>Strongly Disagree</span>
                   <span>Strongly Agree</span>
                 </div>
 
-                {/* Slider Component */}
-                <div className="relative h-12 flex items-center">
-                  {/* Track Line */}
-                  <div className="absolute left-0 right-0 h-px bg-[#10302A]/20" />
-
-                  {/* Ticks */}
-                  <div className="absolute w-full flex justify-between px-[10px] pointer-events-none">
-                    {/* px-[10px] aligns ticks with the 20px thumb center (10px padding) approx? 
-                         Actually, standard range inputs have thumb inset. 
-                         Let's use percent based positioning for ticks to match values 1-5 exactly. 
-                     */}
+                {/* Slider Component - The Tactile Track */}
+                <div className="relative h-14 bg-[#10302A]/5 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
+                  {/* Ticks/Segments Grid */}
+                  <div className="absolute inset-0 flex justify-between items-center px-[26px] pointer-events-none">
                     {[0, 1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="absolute h-3 w-px bg-[#10302A]/20 -translate-y-1/2 top-1/2"
-                        style={{ left: `${i * 25}%` }}
-                      />
+                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#10302A]/20" />
                     ))}
+                  </div>
+
+                  {/* Visual Puck/Thumb */}
+                  <div className="absolute inset-0 px-[4px] pointer-events-none">
+                    <div className="relative w-full h-full">
+                      <motion.div
+                        className="absolute top-1/2 h-[calc(100%-12px)] aspect-square rounded-full shadow-md flex items-center justify-center z-10 bg-[#9C5B42]"
+                        style={{
+                          x: '-50%',
+                          y: '-50%',
+                        }}
+                        animate={{
+                          left: `calc(26px + (100% - 52px) * ${(sliderValue - 1) / 4})`,
+                          scale: isDragging ? 0.95 : 1,
+                        }}
+                      >
+                        {/* Value Display */}
+                        <span className="font-mono text-xs font-bold text-[#F1ECE2]">
+                          {sliderValue}
+                        </span>
+                      </motion.div>
+                    </div>
                   </div>
 
                   {/* Invisible Input - The Interaction Layer */}
@@ -169,41 +176,13 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                     onBlur={() => setIsDragging(false)}
                     onTouchStart={() => setIsDragging(true)}
                     onTouchEnd={() => setIsDragging(false)}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
                   />
-
-                  {/* Visual Thumb - The Feedback Layer */}
-                  <div className="absolute inset-0 pointer-events-none px-[10px]">
-                    {' '}
-                    {/* Padding to match native slider thumb inset offset approx */}
-                    <div className="relative w-full h-full">
-                      <motion.div
-                        className="absolute top-1/2 -translate-y-1/2 -ml-2"
-                        animate={{ left: `${((sliderValue - 1) / 4) * 100}%` }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                      >
-                        <div className="flex flex-col items-center gap-3">
-                          {/* The Circle */}
-                          <motion.div
-                            className="w-4 h-4 bg-[#9C5B42] border-2 border-[#F1ECE2] rounded-full"
-                            animate={{
-                              scale: isDragging ? 1.5 : 1,
-                              boxShadow: isDragging
-                                ? '0 0 20px rgba(156, 91, 66, 0.4)'
-                                : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                            }}
-                            transition={{ duration: 0.2 }}
-                          />
-
-                          {/* The Value Label */}
-                          <span className="absolute top-8 font-mono text-xs font-bold text-[#9C5B42]">
-                            {sliderValue}
-                          </span>
-                        </div>
-                      </motion.div>
-                    </div>
-                  </div>
                 </div>
+
+                <p className="text-center mt-4 font-mono text-xs text-black/50 uppercase tracking-widest">
+                  &lt; DRAG TO ADJUST &gt;
+                </p>
               </div>
             </motion.div>
           </AnimatePresence>
