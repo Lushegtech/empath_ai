@@ -38,12 +38,12 @@ const ConsentScreen: React.FC<ConsentScreenProps> = ({ onConsent }) => {
         className="relative w-full max-w-lg"
       >
         <div className="relative overflow-hidden rounded-xl bg-white/60 backdrop-blur-xl border border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#E05D44] to-transparent opacity-50"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#9C5B42] to-transparent opacity-50"></div>
 
           <div className="p-8 sm:p-10 flex flex-col gap-6">
             <div className="flex flex-col gap-2 mb-2">
               <h1
-                className="text-3xl sm:text-4xl font-serif text-[#1A1A1A] leading-tight"
+                className="text-3xl sm:text-4xl font-serif text-[#10302A] leading-tight"
                 style={{ fontFamily: '"Cormorant Garamond", serif' }}
               >
                 Before we begin
@@ -71,10 +71,10 @@ const ConsentScreen: React.FC<ConsentScreenProps> = ({ onConsent }) => {
                 onClick={() => setIsChecked(!isChecked)}
               >
                 <div
-                  className={`relative flex items-center justify-center w-5 h-5 border transition-all duration-300 ${isChecked ? 'bg-[#1A1A1A] border-[#1A1A1A]' : 'bg-transparent border-black/30 group-hover:border-[#E05D44]'}`}
+                  className={`relative flex items-center justify-center w-5 h-5 border transition-all duration-300 ${isChecked ? 'bg-[#10302A] border-[#10302A]' : 'bg-transparent border-black/30 group-hover:border-[#9C5B42]'}`}
                 >
                   {isChecked && (
-                    <span className="material-symbols-outlined text-[#F2F0EB] text-sm font-bold">
+                    <span className="material-symbols-outlined text-[#F1ECE2] text-sm font-bold">
                       check
                     </span>
                   )}
@@ -88,13 +88,13 @@ const ConsentScreen: React.FC<ConsentScreenProps> = ({ onConsent }) => {
                 <button
                   onClick={onConsent}
                   disabled={!isChecked}
-                  className={`relative w-full h-12 bg-[#1A1A1A] text-[#F2F0EB] rounded overflow-hidden flex items-center justify-center gap-3 transition-all duration-500 ${!isChecked ? 'opacity-50 cursor-not-allowed' : 'opacity-100 hover:shadow-lg'}`}
+                  className={`relative w-full h-12 bg-[#10302A] text-[#F1ECE2] rounded overflow-hidden flex items-center justify-center gap-3 transition-all duration-500 ${!isChecked ? 'opacity-50 cursor-not-allowed' : 'opacity-100 hover:shadow-lg'}`}
                 >
                   <span className="font-mono font-bold tracking-widest uppercase z-10 text-xs sm:text-sm">
                     Begin Questions
                   </span>
                   {isChecked && (
-                    <div className="absolute inset-0 bg-[#E05D44] transform translate-y-full transition-transform duration-300 group-hover/btn:translate-y-0 ease-out"></div>
+                    <div className="absolute inset-0 bg-[#9C5B42] transform translate-y-full transition-transform duration-300 group-hover/btn:translate-y-0 ease-out"></div>
                   )}
                 </button>
               </div>

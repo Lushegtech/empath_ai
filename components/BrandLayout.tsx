@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useMotionTemplate, MotionValue } from 'framer-motion';
 
 // --- VISUAL ASSETS ---
+// --- VISUAL ASSETS ---
 const TopoLines = () => (
-  <div className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none overflow-hidden select-none">
+  <div className="absolute inset-0 z-0 opacity-[0.12] text-[#6B796A] pointer-events-none overflow-hidden select-none">
     <svg
       className="w-full h-full"
       viewBox="0 0 1440 900"
@@ -55,11 +56,42 @@ const GridPattern = () => (
   <div
     className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
     style={{
-      backgroundImage: 'radial-gradient(#000 1px, transparent 1px)',
+      backgroundImage: 'radial-gradient(#10302A 1px, transparent 1px)',
       backgroundSize: '32px 32px',
     }}
   ></div>
 );
+
+const FilmGrain = () => (
+  <div
+    className="absolute inset-0 z-[1] opacity-[0.07] pointer-events-none mix-blend-multiply"
+    style={{
+      backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')",
+      filter: 'contrast(120%) brightness(100%)',
+    }}
+  />
+);
+
+const Lantern = ({
+  mouseX,
+  mouseY,
+}: {
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
+}) => {
+  const background = useMotionTemplate`radial-gradient(
+      600px circle at ${mouseX}px ${mouseY}px,
+      rgba(255, 255, 255, 0.4),
+      transparent 40%
+    )`;
+
+  return (
+    <motion.div
+      className="absolute inset-0 z-[2] pointer-events-none mix-blend-overlay"
+      style={{ background }}
+    />
+  );
+};
 
 interface BrandLayoutProps {
   children: React.ReactNode;
@@ -74,6 +106,19 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
   className = '',
   showFooter = true,
 }) => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
+      mouseX.set(clientX);
+      mouseY.set(clientY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
   // Load Fonts
   useEffect(() => {
     const link = document.createElement('link');
@@ -88,10 +133,12 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
 
   return (
     <div
-      className={`relative flex min-h-screen w-full flex-col bg-[#F2F0EB] text-[#1A1A1A] font-sans overflow-hidden selection:bg-[#E05D44] selection:text-white ${className}`}
+      className={`relative flex min-h-screen w-full flex-col bg-[#F1ECE2] text-[#10302A] font-sans overflow-hidden selection:bg-[#9C5B42] selection:text-white ${className}`}
     >
       <GridPattern />
       <TopoLines />
+      <FilmGrain />
+      <Lantern mouseX={mouseX} mouseY={mouseY} />
 
       {/* --- HEADER --- */}
       <header className="absolute top-0 left-0 w-full p-6 sm:p-8 flex justify-between items-start pointer-events-none z-20 font-mono text-[10px] tracking-widest uppercase text-black/60">

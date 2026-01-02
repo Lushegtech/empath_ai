@@ -31,21 +31,21 @@ const AnalyzingScreen: React.FC = () => {
         <div className="relative w-64 h-64 mb-12 flex items-center justify-center">
           {/* Rings */}
           <motion.div
-            className="absolute inset-0 border border-[#E05D44]/20 rounded-full"
+            className="absolute inset-0 border border-[#9C5B42]/20 rounded-full"
             animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute inset-4 border border-[#E05D44]/40 rounded-full"
+            className="absolute inset-4 border border-[#9C5B42]/40 rounded-full"
             animate={{ scale: [1, 1.1, 1], opacity: [0.8, 0.2, 0.8] }}
             transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: 'easeInOut' }}
           />
 
           {/* Inner Scanning Core */}
-          <div className="relative w-32 h-32 bg-[#1A1A1A] rounded-full overflow-hidden flex items-center justify-center z-10 shadow-2xl">
+          <div className="relative w-32 h-32 bg-[#10302A] rounded-full overflow-hidden flex items-center justify-center z-10 shadow-2xl">
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
             <motion.div
-              className="w-full h-1 bg-[#E05D44] shadow-[0_0_15px_rgba(224,93,68,0.8)]"
+              className="w-full h-1 bg-[#9C5B42] shadow-[0_0_15px_rgba(224,93,68,0.8)]"
               animate={{ y: [-60, 60, -60] }}
               transition={{ duration: 2, ease: 'linear', repeat: Infinity }}
             />
@@ -57,7 +57,7 @@ const AnalyzingScreen: React.FC = () => {
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-2xl sm:text-3xl font-serif text-[#1A1A1A]"
+            className="text-2xl sm:text-3xl font-serif text-[#10302A]"
             style={{ fontFamily: '"Cormorant Garamond", serif' }}
           >
             Analysing Patterns...
@@ -66,17 +66,17 @@ const AnalyzingScreen: React.FC = () => {
           <div className="flex flex-col gap-1 items-center">
             <div className="flex gap-1 h-1 w-24">
               <motion.div
-                className="h-full bg-[#E05D44] w-1/3"
+                className="h-full bg-[#9C5B42] w-1/3"
                 animate={{ opacity: [0.3, 1, 0.3] }}
                 transition={{ duration: 1, repeat: Infinity }}
               />
               <motion.div
-                className="h-full bg-[#E05D44] w-1/3"
+                className="h-full bg-[#9C5B42] w-1/3"
                 animate={{ opacity: [0.3, 1, 0.3] }}
                 transition={{ duration: 1, delay: 0.2, repeat: Infinity }}
               />
               <motion.div
-                className="h-full bg-[#E05D44] w-1/3"
+                className="h-full bg-[#9C5B42] w-1/3"
                 animate={{ opacity: [0.3, 1, 0.3] }}
                 transition={{ duration: 1, delay: 0.4, repeat: Infinity }}
               />

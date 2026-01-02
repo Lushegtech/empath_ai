@@ -41,11 +41,11 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
       >
         {/* Header */}
         <div className="text-center">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#E05D44] mb-2 block">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#9C5B42] mb-2 block">
             Analysis Complete
           </span>
           <h1
-            className="text-4xl sm:text-6xl font-serif text-[#1A1A1A]"
+            className="text-4xl sm:text-6xl font-serif text-[#10302A]"
             style={{ fontFamily: '"Cormorant Garamond", serif' }}
           >
             Your personality snapshot
@@ -55,15 +55,15 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* MAIN CARD */}
           <div className="md:col-span-2 relative overflow-hidden rounded-xl bg-white/60 backdrop-blur-xl border border-white/50 shadow-sm p-8 flex flex-col items-center text-center gap-6">
-            <div className="w-20 h-20 rounded-full border border-[#E05D44]/30 flex items-center justify-center bg-[#F2F0EB]">
-              <span className="material-symbols-outlined text-4xl text-[#E05D44]">psychology</span>
+            <div className="w-20 h-20 rounded-full border border-[#9C5B42]/30 flex items-center justify-center bg-[#F1ECE2]">
+              <span className="material-symbols-outlined text-4xl text-[#9C5B42]">psychology</span>
             </div>
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-black/40 mb-2">
                 Archetype
               </p>
               <h2
-                className="text-3xl sm:text-4xl font-serif text-[#1A1A1A] mb-4"
+                className="text-3xl sm:text-4xl font-serif text-[#10302A] mb-4"
                 style={{ fontFamily: '"Cormorant Garamond", serif' }}
               >
                 {result.personalityType}
@@ -77,7 +77,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
           {/* TRAITS */}
           <div className="rounded-xl bg-white/40 border border-white/50 p-6 sm:p-8 flex flex-col gap-6">
             <h3
-              className="font-serif text-xl text-[#1A1A1A]"
+              className="font-serif text-xl text-[#10302A]"
               style={{ fontFamily: '"Cormorant Garamond", serif' }}
             >
               Key Traits
@@ -86,7 +86,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
               {result.keyTraits.map((trait, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-[#1A1A1A] text-[#F2F0EB] font-mono text-[10px] uppercase tracking-wider rounded-sm"
+                  className="px-3 py-1 bg-[#10302A] text-[#F1ECE2] font-mono text-[10px] uppercase tracking-wider rounded-sm"
                 >
                   {trait}
                 </span>
@@ -97,7 +97,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
           {/* DIMENSIONS */}
           <div className="rounded-xl bg-white/40 border border-white/50 p-6 sm:p-8 flex flex-col gap-6">
             <h3
-              className="font-serif text-xl text-[#1A1A1A]"
+              className="font-serif text-xl text-[#10302A]"
               style={{ fontFamily: '"Cormorant Garamond", serif' }}
             >
               Dimensions
@@ -114,7 +114,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
                       initial={{ width: 0 }}
                       whileInView={{ width: `${dim.score}%` }}
                       transition={{ duration: 1, delay: 0.2 + idx * 0.1 }}
-                      className="h-full bg-[#E05D44]"
+                      className="h-full bg-[#9C5B42]"
                     />
                   </div>
                 </div>
@@ -127,13 +127,13 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
           <button
             onClick={onViewDetails}
-            className="flex-1 h-12 bg-[#1A1A1A] text-[#F2F0EB] font-mono text-xs uppercase tracking-widest hover:bg-[#E05D44] transition-colors flex items-center justify-center"
+            className="flex-1 h-12 bg-[#10302A] text-[#F1ECE2] font-mono text-xs uppercase tracking-widest hover:bg-[#9C5B42] transition-colors flex items-center justify-center"
           >
             View Full Breakdown
           </button>
           <button
             onClick={onRetake}
-            className="flex-1 h-12 border border-[#1A1A1A] text-[#1A1A1A] font-mono text-xs uppercase tracking-widest hover:bg-black/5 transition-colors flex items-center justify-center"
+            className="flex-1 h-12 border border-[#10302A] text-[#10302A] font-mono text-xs uppercase tracking-widest hover:bg-black/5 transition-colors flex items-center justify-center"
           >
             Retake Test
           </button>

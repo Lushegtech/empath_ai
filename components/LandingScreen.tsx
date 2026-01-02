@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useMotionTemplate,
+  MotionValue,
+} from 'framer-motion';
 
 // --- VISUAL ASSETS ---
 const TopoLines = () => (
@@ -61,6 +67,37 @@ const GridPattern = () => (
   ></div>
 );
 
+const FilmGrain = () => (
+  <div
+    className="absolute inset-0 z-[1] opacity-[0.12] pointer-events-none mix-blend-multiply"
+    style={{
+      backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')",
+      filter: 'contrast(120%) brightness(100%)',
+    }}
+  />
+);
+
+const Lantern = ({
+  mouseX,
+  mouseY,
+}: {
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
+}) => {
+  const background = useMotionTemplate`radial-gradient(
+      600px circle at ${mouseX}px ${mouseY}px,
+      rgba(255, 255, 255, 0.4),
+      transparent 40%
+    )`;
+
+  return (
+    <motion.div
+      className="absolute inset-0 z-[2] pointer-events-none mix-blend-overlay"
+      style={{ background }}
+    />
+  );
+};
+
 interface LandingScreenProps {
   onStart: () => void;
 }
@@ -70,6 +107,19 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
+      mouseX.set(clientX);
+      mouseY.set(clientY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
 
   // 1. Load Fonts
   useEffect(() => {
@@ -116,9 +166,11 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
   }, [showHowItWorks]);
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-[#F2F0EB] text-[#1A1A1A] font-sans overflow-hidden selection:bg-[#E05D44] selection:text-white">
+    <div className="relative flex min-h-screen w-full flex-col bg-[#F1ECE2] text-[#10302A] font-sans overflow-hidden selection:bg-[#9C5B42] selection:text-white">
       <GridPattern />
       <TopoLines />
+      <FilmGrain />
+      <Lantern mouseX={mouseX} mouseY={mouseY} />
 
       {/* --- HEADER --- */}
       <header className="absolute top-0 left-0 w-full p-6 sm:p-8 flex justify-between items-start pointer-events-none z-20 font-mono text-[10px] tracking-widest uppercase text-black/60">
@@ -142,21 +194,21 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
             transition={{ duration: 0.8 }}
             className="flex items-center justify-center gap-3 mb-6"
           >
-            <span className="h-px w-8 sm:w-12 bg-[#E05D44]"></span>
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#E05D44]">
+            <span className="h-px w-8 sm:w-12 bg-[#9C5B42]"></span>
+            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#9C5B42]">
               Free Assessment
             </span>
-            <span className="h-px w-8 sm:w-12 bg-[#E05D44]"></span>
+            <span className="h-px w-8 sm:w-12 bg-[#9C5B42]"></span>
           </motion.div>
 
           <motion.h1
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl sm:text-7xl lg:text-8xl font-serif font-light leading-[0.9] tracking-tight text-[#1A1A1A]"
+            className="text-5xl sm:text-7xl lg:text-8xl font-serif font-light leading-[0.9] tracking-tight text-[#10302A]"
             style={{ fontFamily: '"Cormorant Garamond", serif' }}
           >
-            Map the <span className="italic text-[#E05D44]">terrain</span> <br />
+            Map the <span className="italic text-[#9C5B42]">terrain</span> <br />
             of your mind.
           </motion.h1>
 
@@ -181,7 +233,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
           onMouseLeave={() => setHovered(false)}
         >
           <div className="relative overflow-hidden rounded-xl bg-white/60 backdrop-blur-xl border border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] hover:scale-[1.01]">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#E05D44] to-transparent opacity-0 group-hover:opacity-100 animate-scan transition-opacity duration-300"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#9C5B42] to-transparent opacity-0 group-hover:opacity-100 animate-scan transition-opacity duration-300"></div>
 
             <div className="p-6 sm:p-8 flex flex-col gap-6">
               <div className="flex items-center justify-between text-xs font-mono text-black/40 uppercase tracking-wider">
@@ -194,11 +246,11 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
                 </span>
               </div>
 
-              <div className="h-14 w-full bg-[#F2F0EB]/80 rounded border border-black/5 flex items-center px-4 justify-between group-hover:border-[#E05D44]/30 transition-colors">
+              <div className="h-14 w-full bg-[#F1ECE2]/80 rounded border border-black/5 flex items-center px-4 justify-between group-hover:border-[#9C5B42]/30 transition-colors">
                 <span className="font-serif italic text-xl sm:text-2xl text-black/80">
                   Start the quiz...
                 </span>
-                <span className="material-symbols-outlined text-black/20 group-hover:text-[#E05D44] transition-colors">
+                <span className="material-symbols-outlined text-black/20 group-hover:text-[#9C5B42] transition-colors">
                   fingerprint
                 </span>
               </div>
@@ -208,30 +260,30 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
                   <span className="block text-[10px] font-mono uppercase text-black/40 mb-1">
                     Time
                   </span>
-                  <span className="font-mono text-sm font-bold text-[#1A1A1A]">2 Minutes</span>
+                  <span className="font-mono text-sm font-bold text-[#10302A]">2 Minutes</span>
                 </div>
                 <div className="p-3 rounded bg-black/5 border border-black/5">
                   <span className="block text-[10px] font-mono uppercase text-black/40 mb-1">
                     Cost
                   </span>
-                  <span className="font-mono text-sm font-bold text-[#1A1A1A]">Free</span>
+                  <span className="font-mono text-sm font-bold text-[#10302A]">Free</span>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3">
                 <button
                   onClick={onStart}
-                  className="relative w-full h-12 bg-[#1A1A1A] text-[#F2F0EB] rounded overflow-hidden flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                  className="relative w-full h-12 bg-[#10302A] text-[#F1ECE2] rounded overflow-hidden flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
                 >
                   <span className="font-mono font-bold tracking-widest uppercase z-10 text-xs sm:text-sm">
                     Discover My Style
                   </span>
-                  <div className="absolute inset-0 bg-[#E05D44] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-out"></div>
+                  <div className="absolute inset-0 bg-[#9C5B42] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-out"></div>
                 </button>
 
                 <button
                   onClick={() => setShowHowItWorks(true)}
-                  className="text-xs font-mono uppercase tracking-widest text-black/50 hover:text-[#E05D44] transition-colors py-2"
+                  className="text-xs font-mono uppercase tracking-widest text-black/50 hover:text-[#9C5B42] transition-colors py-2"
                 >
                   How does it work?
                 </button>
@@ -252,23 +304,23 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#1A1A1A]/80 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#10302A]/80 backdrop-blur-sm p-4"
           >
-            <div className="bg-[#F2F0EB] p-8 sm:p-12 rounded-lg max-w-md w-full shadow-2xl relative overflow-hidden border border-[#E05D44]/20">
+            <div className="bg-[#F1ECE2] p-8 sm:p-12 rounded-lg max-w-md w-full shadow-2xl relative overflow-hidden border border-[#9C5B42]/20">
               <button
                 onClick={() => setShowHowItWorks(false)}
-                className="absolute top-4 right-4 text-black/40 hover:text-[#E05D44] transition-colors z-10 font-mono text-xl"
+                className="absolute top-4 right-4 text-black/40 hover:text-[#9C5B42] transition-colors z-10 font-mono text-xl"
               >
                 ✕
               </button>
 
               <h2
-                className="text-3xl font-serif text-[#1A1A1A] mb-2 text-center"
+                className="text-3xl font-serif text-[#10302A] mb-2 text-center"
                 style={{ fontFamily: '"Cormorant Garamond", serif' }}
               >
                 How it works
               </h2>
-              <p className="text-center font-mono text-[10px] uppercase tracking-widest text-[#E05D44] mb-10">
+              <p className="text-center font-mono text-[10px] uppercase tracking-widest text-[#9C5B42] mb-10">
                 Simple & Quick
               </p>
 
@@ -279,7 +331,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
               <div className="relative px-2 mb-10">
                 <div className="absolute left-6 top-2 bottom-4 w-px -translate-x-1/2 bg-black/10" />
                 <div
-                  className={`absolute left-6 top-2 w-px -translate-x-1/2 bg-[#E05D44] transition-all duration-[1500ms] ease-out ${isLoaded ? 'h-[85%]' : 'h-0'}`}
+                  className={`absolute left-6 top-2 w-px -translate-x-1/2 bg-[#9C5B42] transition-all duration-[1500ms] ease-out ${isLoaded ? 'h-[85%]' : 'h-0'}`}
                 />
 
                 <div className="space-y-8 relative">
@@ -303,13 +355,13 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
                     >
                       {/* Restored to w-8 for alignment and readability */}
                       <div
-                        className={`relative z-10 flex-shrink-0 w-8 h-8 flex items-center justify-center border transition-colors duration-500 bg-[#F2F0EB] ${isLoaded ? 'border-[#E05D44] text-[#E05D44]' : 'border-black/20 text-black/30'}`}
+                        className={`relative z-10 flex-shrink-0 w-8 h-8 flex items-center justify-center border transition-colors duration-500 bg-[#F1ECE2] ${isLoaded ? 'border-[#9C5B42] text-[#9C5B42]' : 'border-black/20 text-black/30'}`}
                       >
                         <span className="font-mono text-xs font-bold">{step.id}</span>
                       </div>
 
                       <div>
-                        <h4 className="font-serif text-lg text-[#1A1A1A] leading-none mb-1">
+                        <h4 className="font-serif text-lg text-[#10302A] leading-none mb-1">
                           {step.title}
                         </h4>
                         <p className="font-mono text-[10px] text-black/60 uppercase tracking-wide">
@@ -326,7 +378,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
                   setShowHowItWorks(false);
                   onStart();
                 }}
-                className={`w-full h-12 bg-[#1A1A1A] text-[#F2F0EB] font-mono text-xs uppercase tracking-widest transition-all duration-700 hover:bg-[#E05D44] ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                className={`w-full h-12 bg-[#10302A] text-[#F1ECE2] font-mono text-xs uppercase tracking-widest transition-all duration-700 hover:bg-[#9C5B42] ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
                 style={{ transitionDelay: '1000ms' }}
               >
                 Let&apos;s Start

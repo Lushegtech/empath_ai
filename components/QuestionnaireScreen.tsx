@@ -77,7 +77,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
         {/* Progress Bar */}
         <div className="w-full mb-8 sm:mb-12">
           <div className="flex justify-between items-end mb-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#E05D44]">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#9C5B42]">
               Question{' '}
               {currentQuestionIndex + 1 < 10
                 ? `0${currentQuestionIndex + 1}`
@@ -89,7 +89,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
           </div>
           <div className="w-full h-px bg-black/10 relative">
             <motion.div
-              className="absolute top-0 left-0 h-full bg-[#E05D44]"
+              className="absolute top-0 left-0 h-full bg-[#9C5B42]"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5, ease: 'circOut' }}
@@ -110,7 +110,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
             >
               <div className="min-h-[160px] sm:min-h-[200px] flex flex-col items-center justify-center p-6 mb-8">
                 <h2
-                  className="text-3xl sm:text-5xl font-serif text-[#1A1A1A] leading-tight mb-4"
+                  className="text-3xl sm:text-5xl font-serif text-[#10302A] leading-tight mb-4"
                   style={{ fontFamily: '"Cormorant Garamond", serif' }}
                 >
                   {currentQuestion.text}
@@ -134,7 +134,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                       onClick={() => handleOptionSelect(val)}
                       className={`relative group flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full border transition-all duration-300 ${
                         selectedOption === val
-                          ? 'border-[#E05D44] bg-[#E05D44] text-white scale-110 shadow-lg shadow-[#E05D44]/30'
+                          ? 'border-[#9C5B42] bg-[#9C5B42] text-white scale-110 shadow-lg shadow-[#9C5B42]/30'
                           : 'border-black/10 bg-white/40 hover:border-black/30 hover:bg-white/80'
                       }`}
                     >
@@ -163,7 +163,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
             <button
               onClick={handleNext}
               disabled={selectedOption === null}
-              className={`relative overflow-hidden h-12 min-w-[140px] bg-[#1A1A1A] text-[#F2F0EB] transition-all duration-300 group flex items-center justify-center rounded ${
+              className={`relative overflow-hidden h-12 min-w-[140px] bg-[#10302A] text-[#F1ECE2] transition-all duration-300 group flex items-center justify-center rounded ${
                 selectedOption === null
                   ? 'opacity-30 cursor-not-allowed'
                   : 'opacity-100 hover:shadow-lg'
@@ -172,7 +172,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
               <span className="relative z-10 font-mono text-xs font-bold uppercase tracking-widest">
                 {currentQuestionIndex === TOTAL_QUESTIONS - 1 ? 'Finish' : 'Next'}
               </span>
-              <div className="absolute inset-0 bg-[#E05D44] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-out" />
+              <div className="absolute inset-0 bg-[#9C5B42] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-out" />
             </button>
           </div>
         </div>

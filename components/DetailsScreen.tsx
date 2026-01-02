@@ -69,7 +69,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           <div>
             <button
               onClick={onBack}
-              className="group flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-black/40 hover:text-[#E05D44] transition-colors mb-4"
+              className="group flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-black/40 hover:text-[#9C5B42] transition-colors mb-4"
             >
               <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">
                 arrow_back
@@ -77,13 +77,13 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
               Back to Summary
             </button>
             <h1
-              className="text-3xl sm:text-4xl font-serif text-[#1A1A1A]"
+              className="text-3xl sm:text-4xl font-serif text-[#10302A]"
               style={{ fontFamily: '"Cormorant Garamond", serif' }}
             >
               Detailed Analysis
             </h1>
           </div>
-          <div className="px-4 py-2 bg-[#1A1A1A] text-[#F2F0EB] text-xs font-mono uppercase tracking-widest rounded-sm">
+          <div className="px-4 py-2 bg-[#10302A] text-[#F1ECE2] text-xs font-mono uppercase tracking-widest rounded-sm">
             Type: {result.personalityType}
           </div>
         </div>
@@ -102,11 +102,11 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
                 {/* Left Column: Score & Title */}
                 <div className="flex-shrink-0 flex flex-col gap-4 min-w-[200px]">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#E05D44] text-2xl">
+                    <span className="material-symbols-outlined text-[#9C5B42] text-2xl">
                       {trait.icon || 'circle'}
                     </span>
                     <h2
-                      className="font-serif text-2xl text-[#1A1A1A]"
+                      className="font-serif text-2xl text-[#10302A]"
                       style={{ fontFamily: '"Cormorant Garamond", serif' }}
                     >
                       {trait.name}
@@ -120,7 +120,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
                     </div>
                     <div className="h-1 bg-black/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#E05D44]"
+                        className="h-full bg-[#9C5B42]"
                         style={{ width: `${trait.score}%` }}
                       ></div>
                     </div>
@@ -145,7 +145,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
                             key={i}
                             className="flex items-start gap-2 text-xs sm:text-sm text-black/70"
                           >
-                            <span className="mt-1.5 w-1 h-1 bg-[#E05D44] rounded-full shrink-0"></span>
+                            <span className="mt-1.5 w-1 h-1 bg-[#9C5B42] rounded-full shrink-0"></span>
                             {m}
                           </li>
                         ))}
@@ -162,7 +162,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
                             key={i}
                             className="flex items-start gap-2 text-xs sm:text-sm text-black/70"
                           >
-                            <span className="material-symbols-outlined text-sm text-[#E05D44] shrink-0">
+                            <span className="material-symbols-outlined text-sm text-[#9C5B42] shrink-0">
                               check
                             </span>
                             {a}
@@ -177,7 +177,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           ))}
         </div>
 
-        <div className="mt-8 p-8 rounded-xl bg-[#1A1A1A] text-[#F2F0EB] flex flex-col items-center text-center gap-6">
+        <div className="mt-8 p-8 rounded-xl bg-[#10302A] text-[#F1ECE2] flex flex-col items-center text-center gap-6">
           <h2
             className="font-serif text-2xl sm:text-3xl"
             style={{ fontFamily: '"Cormorant Garamond", serif' }}
@@ -187,13 +187,13 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <button
               onClick={handleCopyLink}
-              className="h-10 px-6 border border-[#F2F0EB]/30 hover:bg-[#F2F0EB] hover:text-[#1A1A1A] transition-colors rounded-full font-mono text-xs uppercase tracking-widest min-w-[140px]"
+              className="h-10 px-6 border border-[#F1ECE2]/30 hover:bg-[#F1ECE2] hover:text-[#10302A] transition-colors rounded-full font-mono text-xs uppercase tracking-widest min-w-[140px]"
             >
               {copied ? '✓ Copied!' : 'Copy Link'}
             </button>
             <button
               onClick={handleEmailShare}
-              className="h-10 px-6 bg-[#E05D44] text-white hover:bg-[#c04d3b] transition-colors rounded-full font-mono text-xs uppercase tracking-widest border border-transparent min-w-[140px]"
+              className="h-10 px-6 bg-[#9C5B42] text-white hover:bg-[#c04d3b] transition-colors rounded-full font-mono text-xs uppercase tracking-widest border border-transparent min-w-[140px]"
             >
               Email Me
             </button>
