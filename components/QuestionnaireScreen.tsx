@@ -152,13 +152,29 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                         }}
                         animate={{
                           left: `calc(26px + (100% - 52px) * ${(sliderValue - 1) / 4})`,
-                          scale: isDragging ? 0.95 : 1,
+                          scale: isDragging ? 0.9 : 1,
+                          rotate: sliderValue === 1 ? -10 : sliderValue === 5 ? 10 : 0, // "Lean" into the wall
+                        }}
+                        transition={{
+                          left: { type: 'spring', stiffness: 400, damping: 40 }, // Critical damping (no overshoot)
+                          rotate: { type: 'spring', stiffness: 400, damping: 15 }, // Bouncy rotation
+                          scale: { type: 'spring', stiffness: 400, damping: 15 }, // Bouncy squish
                         }}
                       >
                         {/* Value Display */}
-                        <span className="font-mono text-xs font-bold text-[#F1ECE2]">
+                        <motion.span
+                          className="font-mono text-xs font-bold text-[#F1ECE2]"
+                          animate={{
+                            rotate: sliderValue === 1 ? 10 : sliderValue === 5 ? -10 : 0, // Counter-rotate to keep text upright
+                          }}
+                          transition={{
+                            type: 'spring',
+                            stiffness: 400,
+                            damping: 15,
+                          }}
+                        >
                           {sliderValue}
-                        </span>
+                        </motion.span>
                       </motion.div>
                     </div>
                   </div>
