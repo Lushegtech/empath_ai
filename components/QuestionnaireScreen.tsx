@@ -208,19 +208,19 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
             <button
               onClick={handleBack}
               disabled={currentQuestionIndex === 0}
-              className={`px-8 py-3 font-mono text-xs uppercase tracking-widest text-black/40 hover:text-black transition-colors ${currentQuestionIndex === 0 ? 'hidden' : 'opacity-100'}`}
+              className={`h-14 px-8 font-mono text-xs uppercase tracking-widest text-[#10302A]/40 hover:text-[#10302A] transition-colors ${currentQuestionIndex === 0 ? 'hidden' : 'opacity-100'}`}
             >
               Back
             </button>
 
             <button
               onClick={handleNext}
-              className="relative overflow-hidden h-12 min-w-[140px] bg-[#10302A] text-[#F1ECE2] transition-all duration-300 group flex items-center justify-center rounded hover:shadow-lg"
+              className="group relative overflow-hidden h-14 min-w-[140px] bg-[#10302A] text-[#F1ECE2] transition-all duration-300 flex items-center justify-center rounded shadow-lg shadow-[#10302A]/10 active:scale-[0.99]"
             >
               <span className="relative z-10 font-mono text-xs font-bold uppercase tracking-widest">
                 {currentQuestionIndex === TOTAL_QUESTIONS - 1 ? 'Finish' : 'Next'}
               </span>
-              <div className="absolute inset-0 bg-[#9C5B42] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-out" />
+              <div className="absolute inset-0 bg-[#9C5B42] transform translate-y-full transition-transform duration-500 group-hover:translate-y-0 ease-[cubic-bezier(0.23,1,0.32,1)]" />
             </button>
           </div>
         </div>

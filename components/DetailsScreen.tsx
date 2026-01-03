@@ -53,10 +53,10 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
     const subject = encodeURIComponent(`My Interaction Style: ${result.personalityType}`);
     const body = encodeURIComponent(
       `I just discovered my Interaction Style!\n\n` +
-        `My personality type: ${result.personalityType}\n` +
-        `${result.shortDescription}\n\n` +
-        `Key traits: ${result.keyTraits.join(', ')}\n\n` +
-        `Take the test yourself: ${window.location.origin}`
+      `My personality type: ${result.personalityType}\n` +
+      `${result.shortDescription}\n\n` +
+      `Key traits: ${result.keyTraits.join(', ')}\n\n` +
+      `Take the test yourself: ${window.location.origin}`
     );
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
   };
@@ -96,79 +96,86 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group relative overflow-hidden rounded-xl bg-white/40 border border-white/50 hover:bg-white/60 transition-colors p-6 sm:p-8"
+              className="group relative"
             >
-              <div className="flex flex-col md:flex-row gap-8">
-                {/* Left Column: Score & Title */}
-                <div className="flex-shrink-0 flex flex-col gap-4 min-w-[200px]">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#9C5B42] text-2xl">
-                      {trait.icon || 'circle'}
-                    </span>
-                    <h2
-                      className="font-serif text-2xl text-[#10302A]"
-                      style={{ fontFamily: '"Cormorant Garamond", serif' }}
-                    >
-                      {trait.name}
-                    </h2>
+              {/* Double Etched Border */}
+              <div className="absolute inset-0 rounded-xl border border-[#10302A]/10 z-20 pointer-events-none"></div>
+              <div className="absolute inset-[3px] rounded-[10px] border border-[#10302A]/10 z-20 pointer-events-none"></div>
+
+              {/* Vellum Material */}
+              <div className="relative bg-[#F9F7F5]/85 backdrop-blur-xl shadow-sm rounded-xl overflow-hidden p-6 sm:p-8 hover:shadow-md transition-shadow">
+                <div className="flex flex-col md:flex-row gap-8 relative z-10">
+                  {/* Left Column: Score & Title */}
+                  <div className="flex-shrink-0 flex flex-col gap-4 min-w-[200px]">
+                    <div className="flex items-center gap-3">
+                      <span className="material-symbols-outlined text-[#9C5B42] text-2xl">
+                        {trait.icon || 'circle'}
+                      </span>
+                      <h2
+                        className="font-serif text-2xl text-[#10302A]"
+                        style={{ fontFamily: '"Cormorant Garamond", serif' }}
+                      >
+                        {trait.name}
+                      </h2>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs font-mono uppercase text-black/40">
+                        <span>Score</span>
+                        <span>{trait.score}%</span>
+                      </div>
+                      <div className="h-1 bg-[#10302A]/5 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#9C5B42]"
+                          style={{ width: `${trait.score}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs font-mono text-[#10302A]/50 pt-1">{trait.level}</p>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-mono uppercase text-black/40">
-                      <span>Score</span>
-                      <span>{trait.score}%</span>
-                    </div>
-                    <div className="h-1 bg-black/5 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#9C5B42]"
-                        style={{ width: `${trait.score}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-xs font-mono text-black/50 pt-1">{trait.level}</p>
-                  </div>
-                </div>
+                  {/* Right Column: Description */}
+                  <div className="flex-1 flex flex-col gap-6">
+                    <p className="text-sm sm:text-base text-[#10302A]/80 leading-relaxed font-sans">
+                      {trait.description}
+                    </p>
 
-                {/* Right Column: Description */}
-                <div className="flex-1 flex flex-col gap-6">
-                  <p className="text-sm sm:text-base text-black/80 leading-relaxed font-sans">
-                    {trait.description}
-                  </p>
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <div className="bg-[#10302A]/5 p-4 rounded border border-[#10302A]/5">
+                        <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#10302A]/50 mb-3">
+                          Implications
+                        </h4>
+                        <ul className="space-y-2">
+                          {trait.meanings.map((m, i) => (
+                            <li
+                              key={i}
+                              className="flex items-start gap-2 text-xs sm:text-sm text-[#10302A]/70"
+                            >
+                              <span className="mt-1.5 w-1 h-1 bg-[#9C5B42] rounded-full shrink-0"></span>
+                              {m}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div className="bg-white/30 p-4 rounded border border-white/50">
-                      <h4 className="font-mono text-[10px] uppercase tracking-widest text-black/50 mb-3">
-                        Implications
-                      </h4>
-                      <ul className="space-y-2">
-                        {trait.meanings.map((m, i) => (
-                          <li
-                            key={i}
-                            className="flex items-start gap-2 text-xs sm:text-sm text-black/70"
-                          >
-                            <span className="mt-1.5 w-1 h-1 bg-[#9C5B42] rounded-full shrink-0"></span>
-                            {m}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="bg-white/30 p-4 rounded border border-white/50">
-                      <h4 className="font-mono text-[10px] uppercase tracking-widest text-black/50 mb-3">
-                        Advice
-                      </h4>
-                      <ul className="space-y-2">
-                        {trait.actionableAdvice.map((a, i) => (
-                          <li
-                            key={i}
-                            className="flex items-start gap-2 text-xs sm:text-sm text-black/70"
-                          >
-                            <span className="material-symbols-outlined text-sm text-[#9C5B42] shrink-0">
-                              check
-                            </span>
-                            {a}
-                          </li>
-                        ))}
-                      </ul>
+                      <div className="bg-[#10302A]/5 p-4 rounded border border-[#10302A]/5">
+                        <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#10302A]/50 mb-3">
+                          Advice
+                        </h4>
+                        <ul className="space-y-2">
+                          {trait.actionableAdvice.map((a, i) => (
+                            <li
+                              key={i}
+                              className="flex items-start gap-2 text-xs sm:text-sm text-[#10302A]/70"
+                            >
+                              <span className="material-symbols-outlined text-sm text-[#9C5B42] shrink-0">
+                                check
+                              </span>
+                              {a}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -177,26 +184,35 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           ))}
         </div>
 
-        <div className="mt-8 p-8 rounded-xl bg-[#10302A] text-[#F1ECE2] flex flex-col items-center text-center gap-6">
-          <h2
-            className="font-serif text-2xl sm:text-3xl"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
-          >
-            Share your profile
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button
-              onClick={handleCopyLink}
-              className="h-10 px-6 border border-[#F1ECE2]/30 hover:bg-[#F1ECE2] hover:text-[#10302A] transition-colors rounded-full font-mono text-xs uppercase tracking-widest min-w-[140px]"
+        <div className="mt-8 relative group">
+          {/* Simple Vellum Container for Share */}
+          <div className="absolute inset-0 rounded-xl border border-[#10302A]/10 z-20 pointer-events-none"></div>
+          <div className="relative bg-[#F9F7F5]/85 backdrop-blur-xl shadow-sm rounded-xl p-8 flex flex-col items-center text-center gap-6">
+            <h2
+              className="font-serif text-2xl sm:text-3xl text-[#10302A]"
+              style={{ fontFamily: '"Cormorant Garamond", serif' }}
             >
-              {copied ? '✓ Copied!' : 'Copy Link'}
-            </button>
-            <button
-              onClick={handleEmailShare}
-              className="h-10 px-6 bg-[#9C5B42] text-white hover:bg-[#c04d3b] transition-colors rounded-full font-mono text-xs uppercase tracking-widest border border-transparent min-w-[140px]"
-            >
-              Email Me
-            </button>
+              Share your profile
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <button
+                onClick={handleCopyLink}
+                className="group relative h-14 px-8 border border-[#10302A]/20 hover:border-[#10302A]/40 transition-colors rounded overflow-hidden min-w-[160px]"
+              >
+                <span className="relative z-10 font-mono text-xs uppercase tracking-widest text-[#10302A] group-hover:text-[#9C5B42] transition-colors">
+                  {copied ? '✓ Copied!' : 'Copy Link'}
+                </span>
+              </button>
+              <button
+                onClick={handleEmailShare}
+                className="group relative h-14 px-8 bg-[#10302A] rounded overflow-hidden min-w-[160px] shadow-lg shadow-[#10302A]/10"
+              >
+                <span className="relative z-10 font-mono text-xs uppercase tracking-widest text-[#F1ECE2]">
+                  Email Me
+                </span>
+                <div className="absolute inset-0 bg-[#9C5B42] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0"></div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
