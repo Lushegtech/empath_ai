@@ -4,6 +4,7 @@ import BrandLayout from './BrandLayout';
 import { motion } from 'framer-motion';
 import { pdf } from '@react-pdf/renderer';
 import AnalysisDocument from './AnalysisDocument';
+import CompassChart from './CompassChart';
 
 interface DetailsScreenProps {
   result: AnalysisResult;
@@ -12,8 +13,8 @@ interface DetailsScreenProps {
 
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
   const [currentTime, setCurrentTime] = useState('');
-  const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+
 
   useEffect(() => {
     const updateTime = () => {
@@ -32,23 +33,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = window.location.href;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
+
 
   const handleEmailShare = () => {
     const subject = encodeURIComponent(`My Interaction Style: ${result.personalityType}`);
@@ -141,6 +126,23 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
 
             <div className="px-4 py-2 bg-[#10302A] text-[#F1ECE2] text-xs font-mono uppercase tracking-widest rounded-sm border border-[#10302A]/20 shadow-sm">
               Type: {result.personalityType}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Compass Chart Section */}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, scale: 0.95 },
+            visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: 'circOut' } },
+          }}
+          className="w-full flex justify-center py-6 border-b border-[#10302A]/5"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-radial-gradient from-[#10302A]/5 to-transparent blur-2xl opacity-50"></div>
+            <CompassChart dimensions={result.dimensions} size={320} />
+            <div className="absolute -bottom-4 w-full text-center">
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#10302A]/30">Identity Compass</span>
             </div>
           </div>
         </motion.div>
@@ -268,14 +270,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           >
             Share your profile
           </h2>
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto relative z-10">
-            <button
-              onClick={handleCopyLink}
-              className="h-12 px-8 border border-[#F1ECE2]/20 hover:bg-[#F1ECE2] hover:text-[#10302A] transition-all rounded font-mono text-xs uppercase tracking-widest min-w-[160px] flex items-center justify-center gap-2 group"
-            >
-              <span className="material-symbols-outlined text-sm">link</span>
-              {copied ? 'Copied!' : 'Copy Link'}
-            </button>
+          <div className="flex justify-center w-full sm:w-auto relative z-10">
             <button
               onClick={handleEmailShare}
               className="h-12 px-8 bg-[#9C5B42] text-[#F1ECE2] hover:bg-[#b05d45] transition-all rounded font-mono text-xs uppercase tracking-widest border border-transparent min-w-[160px] flex items-center justify-center gap-2 shadow-lg shadow-black/20"
