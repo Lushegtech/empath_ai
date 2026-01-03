@@ -8,9 +8,11 @@ interface CompassChartProps {
 }
 
 const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) => {
-    const center = size / 2;
-    // Increased padding for labels (60px instead of 40px)
-    const radius = (size / 2) - 60;
+    // Internal coordinate system (fixed) to ensure consistent padding/proportions
+    const viewBoxSize = 500;
+    const center = viewBoxSize / 2;
+    // Radius leaving 110px padding for long labels (Information Processing)
+    const radius = 140;
     const numPoints = dimensions.length;
 
     // Calculate points for the data polygon
@@ -25,27 +27,31 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
     // Calculate points for text labels
     const labelPoints = dimensions.map((dim, i) => {
         const angle = (Math.PI * 2 * i) / numPoints - Math.PI / 2;
-        // Push labels further out
-        const r = radius + 35;
+        // Push labels further out (radius + 20px padding)
+        const r = radius + 25;
         const x = center + r * Math.cos(angle);
         const y = center + r * Math.sin(angle);
         return { x, y, name: dim.name, angle };
     });
 
-    // Grid levels (25%, 50%, 75%, 100%) - Using Circles for Compass feel
+    // Grid levels (25%, 50%, 75%, 100%)
     const levels = [0.25, 0.5, 0.75, 1];
 
     return (
-        <div className="relative flex items-center justify-center p-4">
-            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <div className="relative flex items-center justify-center p-2 w-full max-w-[500px]">
+            <svg
+                viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
+                className="w-full h-auto drop-shadow-sm"
+                style={{ overflow: 'visible' }} // Ensure text doesn't clip if it barely touches edge
+            >
                 <defs>
                     <radialGradient id="compassGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                         <stop offset="0%" stopColor="#9C5B42" stopOpacity="0.3" />
-                        <stop offset="100%" stopColor="#9C5B42" stopOpacity="0.1" />
+                        <stop offset="100%" stopColor="#9C5B42" stopOpacity="0.05" />
                     </radialGradient>
                 </defs>
 
-                {/* Background Concentric Circles (The "Compass" Grid) */}
+                {/* Background Concentric Circles */}
                 {levels.map((level, i) => (
                     <circle
                         key={i}
@@ -54,7 +60,7 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                         r={radius * level}
                         fill="none"
                         stroke="#10302A"
-                        strokeOpacity={i === levels.length - 1 ? "0.2" : "0.05"}
+                        strokeOpacity={i === levels.length - 1 ? "0.15" : "0.05"}
                         strokeWidth="1"
                         strokeDasharray={i === levels.length - 1 ? "0" : "4 4"}
                     />
@@ -65,8 +71,7 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                     const angle = (Math.PI * 2 * i) / numPoints - Math.PI / 2;
                     const x = center + radius * Math.cos(angle);
                     const y = center + radius * Math.sin(angle);
-                    // Tick mark start/end
-                    const tickStart = radius + 5;
+                    const tickStart = radius + 8;
                     const tx = center + tickStart * Math.cos(angle);
                     const ty = center + tickStart * Math.sin(angle);
 
@@ -79,12 +84,11 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                                 strokeOpacity="0.05"
                                 strokeWidth="1"
                             />
-                            {/* Outer Tick Mark */}
                             <line
                                 x1={x} y1={y}
                                 x2={tx} y2={ty}
                                 stroke="#10302A"
-                                strokeOpacity="0.3"
+                                strokeOpacity="0.2"
                                 strokeWidth="1"
                             />
                         </g>
@@ -98,10 +102,11 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                     transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
                     fill="url(#compassGradient)"
                     stroke="#9C5B42"
-                    strokeWidth="1.5"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
                 />
 
-                {/* Data Points - Hollow Rings */}
+                {/* Data Points */}
                 {dimensions.map((dim, i) => {
                     const angle = (Math.PI * 2 * i) / numPoints - Math.PI / 2;
                     const r = (dim.score / 100) * radius;
@@ -111,7 +116,7 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                         <motion.circle
                             key={i}
                             initial={{ cx: center, cy: center, r: 0 }}
-                            animate={{ cx: x, cy: y, r: 3 }}
+                            animate={{ cx: x, cy: y, r: 4 }}
                             transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
                             fill="#F1ECE2"
                             stroke="#9C5B42"
@@ -120,35 +125,14 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                     );
                 })}
 
-                {/* Labels - Serif Font, smart positioning */}
+                {/* Labels - Smart Positioning */}
                 {labelPoints.map((p, i) => {
-                    // Dynamic Text Anchoring to prevent cutoff
-                    // Angles are in radians. -PI/2 is top.
-                    // Right side: angle > -PI/2 && angle < PI/2
-                    // Left side: angle > PI/2 || angle < -PI/2
-
-                    // Normalized angle 0 to 2PI (start from top clockwise)
-                    // Angle in map is: (Math.PI * 2 * i) / numPoints - Math.PI / 2
-                    // i=0: -PI/2 (Top) -> Middle
-                    // i=1: ~ -18deg (Top Right) -> Start
-                    // i=2: ~ 54deg (Bottom Right) -> Start
-                    // i=3: ~ 126deg (Bottom Left) -> End
-                    // i=4: ~ 198deg (-162) (Top Left) -> End
-
                     let anchor = 'middle';
                     let baseline = 'middle';
-
-                    const xPos = p.x - center; // relative to center
-                    const yPos = p.y - center;
-
-                    // Side padding tolerance
-                    const tolerance = 10;
-
-                    if (xPos > tolerance) anchor = 'start';
-                    else if (xPos < -tolerance) anchor = 'end';
-
-                    // Vertical adjust if needed (mostly fine with dominant-baseline="middle")
-                    // but can tweak for top/bottom exact
+                    const xPos = p.x - center;
+                    // Adjust tolerance for when to switch alignment
+                    if (xPos > 10) anchor = 'start';
+                    else if (xPos < -10) anchor = 'end';
 
                     return (
                         <text
@@ -159,12 +143,12 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                             dominantBaseline={baseline}
                             fill="#10302A"
                             style={{
-                                fontSize: '9px',
+                                fontSize: '11px', // Slightly larger for readability
                                 fontFamily: '"Cormorant Garamond", serif',
-                                letterSpacing: '0.05em',
+                                letterSpacing: '0.08em',
                                 textTransform: 'uppercase',
-                                opacity: 0.8,
-                                fontWeight: 600
+                                opacity: 0.7,
+                                fontWeight: 600,
                             }}
                         >
                             {p.name}

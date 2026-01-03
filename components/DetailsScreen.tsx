@@ -138,9 +138,10 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           }}
           className="w-full flex justify-center py-6 border-b border-[#10302A]/5"
         >
-          <div className="relative">
+          <div className="relative w-full max-w-[500px] flex justify-center">
             <div className="absolute inset-0 bg-radial-gradient from-[#10302A]/5 to-transparent blur-2xl opacity-50"></div>
-            <CompassChart dimensions={result.dimensions} size={320} />
+            {/* Size passed here now controls the max-width wrapper in the chart, effectively making it responsive but capped at 500 */}
+            <CompassChart dimensions={result.dimensions} size={500} />
             <div className="absolute -bottom-4 w-full text-center">
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#10302A]/30">Identity Compass</span>
             </div>
