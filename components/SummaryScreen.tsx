@@ -5,6 +5,8 @@ import { AnalysisResult } from '../types';
 import BrandLayout from './BrandLayout';
 import { motion } from 'framer-motion';
 
+import EmailCaptureModal from './EmailCaptureModal';
+
 interface SummaryScreenProps {
   result: AnalysisResult;
   onViewDetails: () => void;
@@ -13,6 +15,7 @@ interface SummaryScreenProps {
 
 const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, onRetake }) => {
   const [currentTime, setCurrentTime] = useState('');
+  const [showEmailModal, setShowEmailModal] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -31,8 +34,21 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
     return () => clearInterval(interval);
   }, []);
 
+  const handleUnlock = (email: string) => {
+    // In the future, we can save this email to context or local storage
+    console.log('Lead Captured:', email);
+    setShowEmailModal(false);
+    onViewDetails();
+  };
+
   return (
     <BrandLayout currentTime={currentTime}>
+      <EmailCaptureModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        onSubmit={handleUnlock}
+      />
+
       <motion.div
         initial="hidden"
         animate="visible"
@@ -184,11 +200,11 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
           className="flex flex-col sm:flex-row gap-4 w-full max-w-md pt-4"
         >
           <button
-            onClick={onViewDetails}
+            onClick={() => setShowEmailModal(true)}
             className="relative flex-1 h-14 bg-[#10302A] text-[#F1ECE2] rounded overflow-hidden flex items-center justify-center gap-3 transition-all active:scale-[0.99] group shadow-lg shadow-[#10302A]/10 hover:shadow-xl hover:shadow-[#10302A]/20"
           >
             <span className="font-mono font-bold tracking-[0.2em] uppercase z-10 text-xs">
-              View Full Breakdown
+              Unlock Full Report
             </span>
             <div className="absolute inset-0 bg-[#9C5B42] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0"></div>
           </button>
