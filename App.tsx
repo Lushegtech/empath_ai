@@ -10,6 +10,8 @@ import SummaryScreen from './components/SummaryScreen';
 import DetailsScreen from './components/DetailsScreen';
 import { analyzePersonality } from './services/geminiService';
 
+import { Analytics } from "@vercel/analytics/react"
+
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>(AppScreen.LANDING);
   const [_answers, setAnswers] = useState<Answer[]>([]);
@@ -65,6 +67,7 @@ const App: React.FC = () => {
       {currentScreen === AppScreen.DETAILS && analysisResult && (
         <DetailsScreen result={analysisResult} onBack={handleBackToSummary} />
       )}
+      <Analytics />
     </div>
   );
 };
