@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { AppScreen, Answer, AnalysisResult } from './types';
 import LandingScreen from './components/LandingScreen';
-import ConsentScreen from './components/ConsentScreen';
+
 import QuestionnaireScreen from './components/QuestionnaireScreen';
 import AnalyzingScreen from './components/AnalyzingScreen';
 import SummaryScreen from './components/SummaryScreen';
@@ -16,13 +16,8 @@ const App: React.FC = () => {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
 
   const handleStartTest = () => {
-    setCurrentScreen(AppScreen.CONSENT);
-  };
-
-  const handleConsentGiven = () => {
     setCurrentScreen(AppScreen.QUESTIONNAIRE);
   };
-
   const handleQuestionnaireComplete = useCallback(async (finalAnswers: Answer[]) => {
     setAnswers(finalAnswers);
     setCurrentScreen(AppScreen.ANALYZING);
@@ -56,7 +51,6 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen w-full bg-background-light dark:bg-background-dark transition-colors duration-300">
       {currentScreen === AppScreen.LANDING && <LandingScreen onStart={handleStartTest} />}
-      {currentScreen === AppScreen.CONSENT && <ConsentScreen onConsent={handleConsentGiven} />}
       {currentScreen === AppScreen.QUESTIONNAIRE && (
         <QuestionnaireScreen onComplete={handleQuestionnaireComplete} />
       )}

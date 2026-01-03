@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import BrandLayout from './BrandLayout';
 
 interface LandingScreenProps {
@@ -7,8 +7,7 @@ interface LandingScreenProps {
 }
 
 const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
-  const [showHowItWorks, setShowHowItWorks] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasConsented, setHasConsented] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
 
@@ -29,16 +28,6 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  // Modal Animation Logic
-  useEffect(() => {
-    if (!showHowItWorks) return;
-    const timer = setTimeout(() => setIsLoaded(true), 100);
-    return () => {
-      clearTimeout(timer);
-      setIsLoaded(false);
-    };
-  }, [showHowItWorks]);
 
   return (
     <BrandLayout currentTime={currentTime} showFooter={true}>
@@ -103,13 +92,26 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
               <div className="p-8 sm:p-10 flex flex-col gap-8 relative z-10">
                 {/* Header Section */}
                 <div className="flex items-center justify-between text-[10px] font-mono font-medium text-[#10302A]/60 uppercase tracking-[0.2em]">
-                  <span>Subject: You</span>
-                  <span className="flex items-center gap-2">
-                    <span
-                      className={`block w-1.5 h-1.5 rounded-full ${hovered ? 'bg-[#9C5B42] animate-pulse' : 'bg-black/20'}`}
-                    ></span>
-                    {hovered ? 'Ready' : 'Standby'}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-0.5 h-2.5 items-end opacity-50">
+                      <motion.div
+                        animate={{ height: [2, 10, 2] }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
+                        className="w-0.5 bg-[#10302A]"
+                      />
+                      <motion.div
+                        animate={{ height: [6, 3, 6] }}
+                        transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
+                        className="w-0.5 bg-[#10302A]"
+                      />
+                      <motion.div
+                        animate={{ height: [4, 8, 4] }}
+                        transition={{ repeat: Infinity, duration: 1.8, ease: 'linear' }}
+                        className="w-0.5 bg-[#10302A]"
+                      />
+                    </div>
+                  </div>
+
                 </div>
 
                 {/* Main Action Block */}
@@ -124,22 +126,51 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  <button
-                    onClick={onStart}
-                    className="relative w-full h-14 bg-[#10302A] text-[#F1ECE2] rounded overflow-hidden flex items-center justify-center gap-3 transition-all active:scale-[0.99] group shadow-lg shadow-[#10302A]/10 hover:shadow-xl hover:shadow-[#10302A]/20"
+                  {/* Custom Consent Checkbox */}
+                  <div
+                    className="flex items-center justify-center gap-3 cursor-pointer group/checkbox"
+                    onClick={() => setHasConsented(!hasConsented)}
                   >
-                    <span className="font-mono font-bold tracking-[0.2em] uppercase z-10 text-xs">
-                      Start Assessment
+                    <div
+                      className={`w-4 h-4 border transition-colors duration-300 flex items-center justify-center ${hasConsented ? 'border-[#9C5B42] bg-[#9C5B42]' : 'border-[#10302A]/30 group-hover/checkbox:border-[#9C5B42]'}`}
+                    >
+                      {hasConsented && (
+                        <motion.svg
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="w-3 h-3 text-[#F1ECE2]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="square"
+                            strokeLinejoin="miter"
+                            strokeWidth={3}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </motion.svg>
+                      )}
+                    </div>
+                    <span
+                      className={`font-mono text-[10px] uppercase tracking-widest transition-colors duration-300 ${hasConsented ? 'text-[#10302A]' : 'text-[#10302A]/50 group-hover/checkbox:text-[#9C5B42]'}`}
+                    >
+                      I consent to the processing of my responses for analysis
                     </span>
-                    {/* Button Hover Effect */}
-                    <div className="absolute inset-0 bg-[#9C5B42] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0"></div>
-                  </button>
+                  </div>
 
                   <button
-                    onClick={() => setShowHowItWorks(true)}
-                    className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#10302A]/40 hover:text-[#9C5B42] transition-colors py-2 flex items-center justify-center gap-2"
+                    onClick={onStart}
+                    disabled={!hasConsented}
+                    className={`relative w-full h-14 rounded overflow-hidden flex items-center justify-center gap-3 transition-all duration-300 ${hasConsented ? 'bg-[#10302A] text-[#F1ECE2] shadow-lg shadow-[#10302A]/10 hover:shadow-xl hover:shadow-[#10302A]/20 active:scale-[0.99]' : 'bg-[#10302A]/5 border border-[#10302A]/10 text-[#10302A]/40 cursor-not-allowed'}`}
                   >
-                    <span>System Protocol</span>
+                    <span className="font-mono font-bold tracking-[0.2em] uppercase z-10 text-xs">
+                      Start Quiz
+                    </span>
+                    {/* Button Hover Effect (Only active when consented) */}
+                    {hasConsented && (
+                      <div className="absolute inset-0 bg-[#9C5B42] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0"></div>
+                    )}
                   </button>
                 </div>
               </div>
@@ -147,92 +178,6 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
           </div>
         </motion.div>
       </div>
-
-      {/* --- MODAL (FIXED ALIGNMENT) --- */}
-      <AnimatePresence>
-        {showHowItWorks && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#10302A]/80 backdrop-blur-sm p-4"
-          >
-            <div className="bg-[#F1ECE2] p-8 sm:p-12 rounded-lg max-w-md w-full shadow-2xl relative overflow-hidden border border-[#9C5B42]/20">
-              <button
-                onClick={() => setShowHowItWorks(false)}
-                className="absolute top-4 right-4 text-black/40 hover:text-[#9C5B42] transition-colors z-10 font-mono text-xl"
-              >
-                ✕
-              </button>
-
-              <h2
-                className="text-3xl font-serif text-[#10302A] mb-2 text-center"
-                style={{ fontFamily: '"Cormorant Garamond", serif' }}
-              >
-                How it works
-              </h2>
-              <p className="text-center font-mono text-[10px] uppercase tracking-widest text-[#9C5B42] mb-10">
-                Simple & Quick
-              </p>
-
-              <div className="relative px-2 mb-10">
-                <div className="absolute left-6 top-2 bottom-4 w-px -translate-x-1/2 bg-black/10" />
-                <div
-                  className={`absolute left-6 top-2 w-px -translate-x-1/2 bg-[#9C5B42] transition-all duration-[1500ms] ease-out ${isLoaded ? 'h-[85%]' : 'h-0'}`}
-                />
-
-                <div className="space-y-8 relative">
-                  {[
-                    {
-                      id: '1',
-                      title: 'Answer Questions',
-                      desc: '12 simple questions about how you interact.',
-                    },
-                    {
-                      id: '2',
-                      title: 'We Analyze It',
-                      desc: 'Our AI looks for patterns in your choices.',
-                    },
-                    { id: '3', title: 'Get Results', desc: 'See your style and how to use it.' },
-                  ].map((step, idx) => (
-                    <div
-                      key={step.id}
-                      className={`flex gap-6 items-start transition-all duration-700 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
-                      style={{ transitionDelay: `${idx * 300}ms` }}
-                    >
-                      <div
-                        className={`relative z-10 flex-shrink-0 w-8 h-8 flex items-center justify-center border transition-colors duration-500 bg-[#F1ECE2] ${isLoaded ? 'border-[#9C5B42] text-[#9C5B42]' : 'border-black/20 text-black/30'}`}
-                      >
-                        <span className="font-mono text-xs font-bold">{step.id}</span>
-                      </div>
-
-                      <div>
-                        <h4 className="font-serif text-lg text-[#10302A] leading-none mb-1">
-                          {step.title}
-                        </h4>
-                        <p className="font-mono text-[10px] text-black/60 uppercase tracking-wide">
-                          {step.desc}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  setShowHowItWorks(false);
-                  onStart();
-                }}
-                className={`w-full h-12 bg-[#10302A] text-[#F1ECE2] font-mono text-xs uppercase tracking-widest transition-all duration-700 hover:bg-[#9C5B42] ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                style={{ transitionDelay: '1000ms' }}
-              >
-                Let&apos;s Start
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </BrandLayout>
   );
 };
