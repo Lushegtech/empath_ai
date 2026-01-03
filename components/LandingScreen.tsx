@@ -90,46 +90,58 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          <div className="relative overflow-hidden rounded-xl bg-white/60 backdrop-blur-xl border border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] hover:scale-[1.01]">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#9C5B42] to-transparent opacity-0 group-hover:opacity-100 animate-scan transition-opacity duration-300"></div>
+          <div className="relative overflow-hidden rounded-xl">
+            {/* Double Etched Border Container */}
+            <div className="absolute inset-0 rounded-xl border border-[#10302A]/10 z-20 pointer-events-none"></div>
+            <div className="absolute inset-[3px] rounded-[10px] border border-[#10302A]/10 z-20 pointer-events-none"></div>
 
-            <div className="p-6 sm:p-8 flex flex-col gap-6">
-              <div className="flex items-center justify-between text-xs font-mono text-black/40 uppercase tracking-wider">
-                <span>Your Assessment</span>
-                <span className="flex items-center gap-2">
-                  <span
-                    className={`block w-1.5 h-1.5 rounded-full transition-colors duration-300 ${hovered ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-gray-400'}`}
-                  ></span>
-                  {hovered ? 'Ready to start' : 'Waiting'}
-                </span>
-              </div>
+            {/* Vellum Material */}
+            <div className="relative bg-[#F9F7F5]/85 backdrop-blur-xl shadow-sm transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(16,48,42,0.15)]">
+              {/* Aurora Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-[#F1ECE2]/20 to-[#9C5B42]/10 opacity-70 pointer-events-none animate-pulse duration-[5000ms]"></div>
 
-              <div className="h-14 w-full bg-[#F1ECE2]/80 rounded border border-black/5 flex items-center px-4 justify-between group-hover:border-[#9C5B42]/30 transition-colors">
-                <span className="font-serif italic text-xl sm:text-2xl text-black/80">
-                  Ready to begin?
-                </span>
-                <span className="material-symbols-outlined text-black/20 group-hover:text-[#9C5B42] transition-colors">
-                  fingerprint
-                </span>
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={onStart}
-                  className="relative w-full h-12 bg-[#10302A] text-[#F1ECE2] rounded overflow-hidden flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
-                >
-                  <span className="font-mono font-bold tracking-widest uppercase z-10 text-xs sm:text-sm">
-                    Start Quiz
+              <div className="p-8 sm:p-10 flex flex-col gap-8 relative z-10">
+                {/* Header Section */}
+                <div className="flex items-center justify-between text-[10px] font-mono font-medium text-[#10302A]/60 uppercase tracking-[0.2em]">
+                  <span>Subject: You</span>
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={`block w-1.5 h-1.5 rounded-full ${hovered ? 'bg-[#9C5B42] animate-pulse' : 'bg-black/20'}`}
+                    ></span>
+                    {hovered ? 'Ready' : 'Standby'}
                   </span>
-                  <div className="absolute inset-0 bg-[#9C5B42] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0 ease-out"></div>
-                </button>
+                </div>
 
-                <button
-                  onClick={() => setShowHowItWorks(true)}
-                  className="text-xs font-mono uppercase tracking-widest text-black/50 hover:text-[#9C5B42] transition-colors py-2"
-                >
-                  How does it work?
-                </button>
+                {/* Main Action Block */}
+                <div className="relative">
+                  <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-0.5 h-8 bg-[#10302A]/10"></div>
+                  <h3
+                    className="font-serif italic text-3xl sm:text-4xl text-[#10302A] leading-tight"
+                    style={{ fontFamily: '"Cormorant Garamond", serif' }}
+                  >
+                    Ready to begin?
+                  </h3>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <button
+                    onClick={onStart}
+                    className="relative w-full h-14 bg-[#10302A] text-[#F1ECE2] rounded overflow-hidden flex items-center justify-center gap-3 transition-all active:scale-[0.99] group shadow-lg shadow-[#10302A]/10 hover:shadow-xl hover:shadow-[#10302A]/20"
+                  >
+                    <span className="font-mono font-bold tracking-[0.2em] uppercase z-10 text-xs">
+                      Start Assessment
+                    </span>
+                    {/* Button Hover Effect */}
+                    <div className="absolute inset-0 bg-[#9C5B42] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-0"></div>
+                  </button>
+
+                  <button
+                    onClick={() => setShowHowItWorks(true)}
+                    className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#10302A]/40 hover:text-[#9C5B42] transition-colors py-2 flex items-center justify-center gap-2"
+                  >
+                    <span>System Protocol</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
