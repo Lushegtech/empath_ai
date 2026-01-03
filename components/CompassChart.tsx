@@ -120,27 +120,57 @@ const CompassChart: React.FC<CompassChartProps> = ({ dimensions, size = 300 }) =
                     );
                 })}
 
-                {/* Labels - Serif Font, carefully positioned */}
-                {labelPoints.map((p, i) => (
-                    <text
-                        key={i}
-                        x={p.x}
-                        y={p.y}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        fill="#10302A"
-                        style={{
-                            fontSize: '9px', // Slightly smaller for elegance
-                            fontFamily: '"Cormorant Garamond", serif', // Serif font
-                            letterSpacing: '0.05em',
-                            textTransform: 'uppercase',
-                            opacity: 0.8,
-                            fontWeight: 600
-                        }}
-                    >
-                        {p.name}
-                    </text>
-                ))}
+                {/* Labels - Serif Font, smart positioning */}
+                {labelPoints.map((p, i) => {
+                    // Dynamic Text Anchoring to prevent cutoff
+                    // Angles are in radians. -PI/2 is top.
+                    // Right side: angle > -PI/2 && angle < PI/2
+                    // Left side: angle > PI/2 || angle < -PI/2
+
+                    // Normalized angle 0 to 2PI (start from top clockwise)
+                    // Angle in map is: (Math.PI * 2 * i) / numPoints - Math.PI / 2
+                    // i=0: -PI/2 (Top) -> Middle
+                    // i=1: ~ -18deg (Top Right) -> Start
+                    // i=2: ~ 54deg (Bottom Right) -> Start
+                    // i=3: ~ 126deg (Bottom Left) -> End
+                    // i=4: ~ 198deg (-162) (Top Left) -> End
+
+                    let anchor = 'middle';
+                    let baseline = 'middle';
+
+                    const xPos = p.x - center; // relative to center
+                    const yPos = p.y - center;
+
+                    // Side padding tolerance
+                    const tolerance = 10;
+
+                    if (xPos > tolerance) anchor = 'start';
+                    else if (xPos < -tolerance) anchor = 'end';
+
+                    // Vertical adjust if needed (mostly fine with dominant-baseline="middle")
+                    // but can tweak for top/bottom exact
+
+                    return (
+                        <text
+                            key={i}
+                            x={p.x}
+                            y={p.y}
+                            textAnchor={anchor}
+                            dominantBaseline={baseline}
+                            fill="#10302A"
+                            style={{
+                                fontSize: '9px',
+                                fontFamily: '"Cormorant Garamond", serif',
+                                letterSpacing: '0.05em',
+                                textTransform: 'uppercase',
+                                opacity: 0.8,
+                                fontWeight: 600
+                            }}
+                        >
+                            {p.name}
+                        </text>
+                    );
+                })}
             </svg>
         </div>
     );
