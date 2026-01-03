@@ -136,7 +136,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
             hidden: { opacity: 0, scale: 0.95 },
             visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: 'circOut' } },
           }}
-          className="w-full flex justify-center py-6 border-b border-[#10302A]/5"
+          className="w-full flex justify-center py-4 border-b border-[#10302A]/5"
         >
           <div className="relative w-full max-w-[500px] flex justify-center">
             <div className="absolute inset-0 bg-radial-gradient from-[#10302A]/5 to-transparent blur-2xl opacity-50"></div>
