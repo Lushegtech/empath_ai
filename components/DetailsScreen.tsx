@@ -1,9 +1,9 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { AnalysisResult } from '../types';
 import BrandLayout from './BrandLayout';
 import { motion } from 'framer-motion';
+import { pdf } from '@react-pdf/renderer';
+import AnalysisDocument from './AnalysisDocument';
 
 interface DetailsScreenProps {
   result: AnalysisResult;
@@ -13,6 +13,7 @@ interface DetailsScreenProps {
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
   const [currentTime, setCurrentTime] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -61,26 +62,27 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
   };
 
-  const handleDownloadPDF = () => {
-    window.print();
+  const handleDownloadPDF = async () => {
+    setIsDownloading(true);
+    try {
+      const blob = await pdf(<AnalysisDocument result={result} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `empath-analysis-${result.personalityType.replace(/\s+/g, '-').toLowerCase()}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('PDF Generation failed:', error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
     <BrandLayout currentTime={currentTime}>
-      {/* Print Styles */}
-      <style>{`
-        @media print {
-          @page { margin: 1cm; size: auto; }
-          body { 
-            -webkit-print-color-adjust: exact !important; 
-            print-color-adjust: exact !important;
-            background-color: #F1ECE2 !important;
-          }
-          button, .no-print, header, footer { display: none !important; }
-          .print-header { flex-direction: row !important; align-items: center !important; justify-content: space-between !important; border: none !important; }
-          * { text-shadow: none !important; }
-        }
-      `}</style>
       <motion.div
         initial="hidden"
         animate="visible"
@@ -126,12 +128,15 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           <div className="flex items-center gap-3">
             <button
               onClick={handleDownloadPDF}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-widest text-[#10302A] border border-[#10302A]/20 rounded-sm hover:bg-[#10302A]/5 transition-colors"
+              disabled={isDownloading}
+              className={`flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-widest text-[#10302A] border border-[#10302A]/20 rounded-sm hover:bg-[#10302A]/5 transition-colors ${isDownloading ? 'opacity-50 cursor-wait' : ''}`}
             >
               <span className="material-symbols-outlined text-sm">
-                download
+                {isDownloading ? 'hourglass_empty' : 'download'}
               </span>
-              <span className="hidden sm:inline">Download PDF</span>
+              <span className="hidden sm:inline">
+                {isDownloading ? 'Generating...' : 'Download PDF'}
+              </span>
             </button>
 
             <div className="px-4 py-2 bg-[#10302A] text-[#F1ECE2] text-xs font-mono uppercase tracking-widest rounded-sm border border-[#10302A]/20 shadow-sm">
