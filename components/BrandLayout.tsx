@@ -179,7 +179,6 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({
       <header className="absolute top-0 left-0 w-full p-6 sm:p-8 flex justify-between items-start pointer-events-none z-20 font-mono text-[10px] tracking-widest uppercase text-black/60">
         <div className="flex flex-col gap-1">
           <span className="font-bold text-black">Interaction Style</span>
-          <span>Status: Active</span>
         </div>
         {currentTime && (
           <div className="flex flex-col gap-1 text-right">

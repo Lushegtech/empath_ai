@@ -111,7 +111,12 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
                       />
                     </div>
                   </div>
-
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={`block w-1.5 h-1.5 rounded-full ${hovered ? 'bg-[#9C5B42] animate-pulse' : 'bg-black/20'}`}
+                    ></span>
+                    {hovered ? 'Ready' : 'Standby'}
+                  </span>
                 </div>
 
                 {/* Main Action Block */}
