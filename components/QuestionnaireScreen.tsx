@@ -18,6 +18,8 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
   const [isDragging, setIsDragging] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
 
+  const [hasInteracted, setHasInteracted] = useState(false); // New state to track interaction
+
   const currentQuestion = QUESTIONS[currentQuestionIndex];
 
   useEffect(() => {
@@ -39,9 +41,17 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSliderValue(Number(e.target.value));
+    if (!hasInteracted) setHasInteracted(true); // Activate on change
+  };
+
+  const handleInteractionStart = () => {
+    setIsDragging(true);
+    if (!hasInteracted) setHasInteracted(true); // Activate on touch/click
   };
 
   const handleNext = () => {
+    if (!hasInteracted) return; // Prevent progress if no interaction
+
     setIsAccelerating(true); // Trigger speed up
 
     const newAnswer: Answer = {
@@ -56,6 +66,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
       setTimeout(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setSliderValue(3); // Reset to neutral
+        setHasInteracted(false); // Reset interaction state
         setIsAccelerating(false); // Slow down after transition
       }, 500); // Wait for speed up effect
     } else {
@@ -69,6 +80,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
       setCurrentQuestionIndex(prevIndex);
       const prevAnswer = answers[prevIndex];
       setSliderValue(prevAnswer ? prevAnswer.value : 3);
+      setHasInteracted(true); // Treat going back as having interaction (since it was answered)
       setAnswers(answers.slice(0, prevIndex));
     }
   };
@@ -133,7 +145,7 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                 </div>
 
                 {/* Slider Component - The Tactile Track */}
-                <div className="relative h-14 bg-[#10302A]/5 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
+                <div className={`relative h-14 bg-[#10302A]/5 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${!hasInteracted ? 'opacity-70' : 'opacity-100'}`}>
                   {/* Ticks/Segments Grid */}
                   <div className="absolute inset-0 flex justify-between items-center px-[26px] pointer-events-none">
                     {[0, 1, 2, 3, 4].map((i) => (
@@ -145,33 +157,31 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                   <div className="absolute inset-0 px-[4px] pointer-events-none">
                     <div className="relative w-full h-full">
                       <motion.div
-                        className="absolute top-1/2 h-[calc(100%-12px)] aspect-square rounded-full shadow-md flex items-center justify-center z-10 bg-[#9C5B42]"
+                        className={`absolute top-1/2 h-[calc(100%-12px)] aspect-square rounded-full shadow-md flex items-center justify-center z-10 transition-colors duration-300 ${hasInteracted ? 'bg-[#9C5B42]' : 'bg-[#10302A]/20'}`}
                         style={{
                           x: '-50%',
                           y: '-50%',
                         }}
                         animate={{
                           left: `calc(26px + (100% - 52px) * ${(sliderValue - 1) / 4})`,
-                          scale: isDragging ? 0.9 : 1,
-                          rotate: sliderValue === 1 ? -10 : sliderValue === 5 ? 10 : 0, // "Lean" into the wall
+                          scale: isDragging ? 0.9 : hasInteracted ? 1 : 0.8, // Smaller if not interacted
+                          rotate: sliderValue === 1 ? -10 : sliderValue === 5 ? 10 : 0,
                         }}
                         transition={{
-                          left: { type: 'spring', stiffness: 400, damping: 40 }, // Critical damping (no overshoot)
-                          rotate: { type: 'spring', stiffness: 400, damping: 15 }, // Bouncy rotation
-                          scale: { type: 'spring', stiffness: 400, damping: 15 }, // Bouncy squish
+                          left: { type: 'spring', stiffness: 400, damping: 40 },
+                          rotate: { type: 'spring', stiffness: 400, damping: 15 },
+                          scale: { type: 'spring', stiffness: 400, damping: 15 },
                         }}
                       >
-                        {/* Value Display */}
+                        {/* Value Display - Only show if interacted */}
                         <motion.span
                           className="font-mono text-xs font-bold text-[#F1ECE2]"
+                          initial={{ opacity: 0 }}
                           animate={{
-                            rotate: sliderValue === 1 ? 10 : sliderValue === 5 ? -10 : 0, // Counter-rotate to keep text upright
+                            opacity: hasInteracted ? 1 : 0,
+                            rotate: sliderValue === 1 ? 10 : sliderValue === 5 ? -10 : 0,
                           }}
-                          transition={{
-                            type: 'spring',
-                            stiffness: 400,
-                            damping: 15,
-                          }}
+                          transition={{ duration: 0.2 }}
                         >
                           {sliderValue}
                         </motion.span>
@@ -187,17 +197,17 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
                     step="1"
                     value={sliderValue}
                     onChange={handleSliderChange}
-                    onPointerDown={() => setIsDragging(true)}
+                    onPointerDown={handleInteractionStart}
                     onPointerUp={() => setIsDragging(false)}
                     onBlur={() => setIsDragging(false)}
-                    onTouchStart={() => setIsDragging(true)}
+                    onTouchStart={handleInteractionStart}
                     onTouchEnd={() => setIsDragging(false)}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
                   />
                 </div>
 
-                <p className="text-center mt-4 font-mono text-xs text-black/50 uppercase tracking-widest">
-                  &lt; DRAG TO ADJUST &gt;
+                <p className={`text-center mt-4 font-mono text-xs uppercase tracking-widest transition-colors duration-500 ${hasInteracted ? 'text-black/50' : 'text-[#9C5B42] animate-pulse'}`}>
+                  {hasInteracted ? '< DRAG TO ADJUST >' : '< TOUCH TO ACTIVATE >'}
                 </p>
               </div>
             </motion.div>
@@ -215,7 +225,8 @@ const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({ onComplete })
 
             <button
               onClick={handleNext}
-              className="relative overflow-hidden h-12 min-w-[140px] bg-[#10302A] text-[#F1ECE2] transition-all duration-300 group flex items-center justify-center rounded hover:shadow-lg"
+              disabled={!hasInteracted}
+              className={`relative overflow-hidden h-12 min-w-[140px] bg-[#10302A] text-[#F1ECE2] transition-all duration-300 group flex items-center justify-center rounded hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               <span className="relative z-10 font-mono text-xs font-bold uppercase tracking-widest">
                 {currentQuestionIndex === TOTAL_QUESTIONS - 1 ? 'Finish' : 'Next'}
