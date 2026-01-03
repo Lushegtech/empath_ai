@@ -81,7 +81,9 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ result, onViewDetails, on
             <div className="relative bg-[#F9F7F5]/85 backdrop-blur-xl shadow-sm p-8 sm:p-10 flex flex-col items-center text-center gap-6 rounded-xl transition-all duration-500 hover:shadow-md">
               <div className="w-24 h-24 rounded-full border border-[#9C5B42]/20 flex items-center justify-center bg-[#F1ECE2] relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                 <div className="absolute inset-0 bg-[#9C5B42]/5 animate-pulse rounded-full"></div>
-                <span className="material-symbols-outlined text-5xl text-[#9C5B42]">psychology</span>
+                <span className="material-symbols-outlined text-5xl text-[#9C5B42]">
+                  psychology
+                </span>
               </div>
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#10302A]/40 mb-3">

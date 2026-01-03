@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AnalysisResult } from '../types';
 import BrandLayout from './BrandLayout';
 import { motion } from 'framer-motion';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 interface DetailsScreenProps {
   result: AnalysisResult;
@@ -13,6 +15,8 @@ interface DetailsScreenProps {
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
   const [currentTime, setCurrentTime] = useState('');
   const [copied, setCopied] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -61,9 +65,53 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
   };
 
+  const handleDownloadPDF = async () => {
+    if (!contentRef.current) return;
+    setIsDownloading(true);
+
+    try {
+      // Small delay to ensure any animations are rendered/stable if needed,
+      // though we are capturing what is visible.
+      const content = contentRef.current;
+
+      const canvas = await html2canvas(content, {
+        scale: 2, // High resolution
+        useCORS: true,
+        backgroundColor: '#F1ECE2', // Ensure background color is captured
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+
+
+      // We calculate keeping the aspect ratio to fit width.
+      // If it's too long, it might essentially scale down or we might need multi-page.
+      // For this specific 'snapshot', fitting to width is usually preferred for a "poster" feel,
+      // creating a long PDF page or just fitting on A4.
+      // Let's simply fit to A4 width and let height be whatever.
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfImgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfImgHeight);
+      pdf.save(`empath-analysis-${result.personalityType.replace(/\s+/g, '-').toLowerCase()}.pdf`);
+    } catch (error) {
+      console.error('PDF Generation failed', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <BrandLayout currentTime={currentTime}>
       <motion.div
+        ref={contentRef}
         initial="hidden"
         animate="visible"
         variants={{
@@ -89,7 +137,8 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
           <div>
             <button
               onClick={onBack}
-              className="group flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-black/40 hover:text-[#9C5B42] transition-colors mb-4"
+              // Hide back button during PDF generation to keep it clean
+              className={`group flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-black/40 hover:text-[#9C5B42] transition-colors mb-4 ${isDownloading ? 'opacity-0' : ''}`}
             >
               <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">
                 arrow_back
@@ -103,8 +152,26 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
               Detailed Analysis
             </h1>
           </div>
-          <div className="px-4 py-2 bg-[#10302A] text-[#F1ECE2] text-xs font-mono uppercase tracking-widest rounded-sm border border-[#10302A]/20 shadow-sm">
-            Type: {result.personalityType}
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleDownloadPDF}
+              disabled={isDownloading}
+              className={`flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-widest text-[#10302A] border border-[#10302A]/20 rounded-sm hover:bg-[#10302A]/5 transition-colors ${isDownloading ? 'opacity-50 cursor-wait' : ''}`}
+              // Start: Hide from PDF capture
+              data-html2canvas-ignore="true"
+            >
+              <span className="material-symbols-outlined text-sm">
+                {isDownloading ? 'hourglass_empty' : 'download'}
+              </span>
+              <span className="hidden sm:inline">
+                {isDownloading ? 'Generating...' : 'Download PDF'}
+              </span>
+            </button>
+
+            <div className="px-4 py-2 bg-[#10302A] text-[#F1ECE2] text-xs font-mono uppercase tracking-widest rounded-sm border border-[#10302A]/20 shadow-sm">
+              Type: {result.personalityType}
+            </div>
           </div>
         </motion.div>
 
@@ -165,7 +232,8 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ result, onBack }) => {
                     <div className="grid sm:grid-cols-2 gap-6">
                       <div className="bg-white/40 p-5 rounded border border-[#10302A]/10">
                         <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#10302A]/40 mb-3 flex items-center gap-2">
-                          <span className="w-1 h-1 rounded-full bg-[#10302A]/40"></span> Implications
+                          <span className="w-1 h-1 rounded-full bg-[#10302A]/40"></span>{' '}
+                          Implications
                         </h4>
                         <ul className="space-y-2.5">
                           {trait.meanings.map((m, i) => (
